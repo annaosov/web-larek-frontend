@@ -40,4 +40,9 @@ export class AppState extends Model<IAppState> {
         this.catalog = items.map(item => new CardItem(item, this.events));
         this.emitChanges('items:changed', { catalog: this.catalog });
     }
+
+    setPreview(item: CardItem) {
+        this.preview = item.id;
+        this.emitChanges('preview:changed', item);
+    }
 }

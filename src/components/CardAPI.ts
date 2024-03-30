@@ -13,6 +13,15 @@ export class CardAPI extends Api implements ICardAPI {
         this.cdn = cdn;
     }
 
+    getCardItem(id: string): Promise<ICard> {
+        return this.get(`/product/${id}`).then(
+            (item: ICard) => ({
+                ...item,
+                image: this.cdn + item.image,
+            })
+        );
+    }
+
     getCardList(): Promise<ICard[]> {
         return this.get('/product').then((data: ApiListResponse<ICard>) =>    
         data.items.map((item) => ({

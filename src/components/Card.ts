@@ -1,6 +1,10 @@
 import {Component} from "./base/Component";
 import {ensureElement} from "../utils/utils";
 
+interface ICardActions {
+    onClick: (event: MouseEvent) => void;
+}
+
 export interface ICard {
     title: string;
     description?: string | string[];
@@ -17,21 +21,30 @@ export class Card<T> extends Component<ICard> {
     protected _price: HTMLElement;
     protected _category: HTMLElement;
     protected _id: HTMLElement;
+    protected _button: HTMLElement;
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, actions?: ICardActions) {
         super(container);
 
         this._title = ensureElement<HTMLElement>(`.card__title`, container);
         this._image = ensureElement<HTMLImageElement>(`.card__image`, container);
         this._price = ensureElement<HTMLElement>(`.card__price`, container);
-        this._description = container.querySelector(`.card__description`);
+        this._description = container.querySelector(`.card__text`);
+        this._button = ensureElement<HTMLElement>(container);
         this._category = ensureElement<HTMLElement>(`.card__category`, container);
-        this._id = container;
+        this._id = ensureElement<HTMLElement>(container);
+
+        if (actions?.onClick) {
+            if (this._button) {
+                this._button.addEventListener('click', actions.onClick);
+            } else {
+                container.addEventListener('click', actions.onClick);
+            }
+        }
     }
 
     set id(value: string) {
         this._id.setAttribute('id', value);
-        console.log(this._id);
     }
 
     get id(): string {
@@ -50,16 +63,12 @@ export class Card<T> extends Component<ICard> {
         this.setImage(this._image, value, this.title)
     }
 
-    set description(value: string | string[]) {
-        if (Array.isArray(value)) {
-            this._description.replaceWith(...value.map(str => {
-                const descTemplate = this._description.cloneNode() as HTMLElement;
-                this.setText(descTemplate, str);
-                return descTemplate;
-            }));
-        } else {
-            this.setText(this._description, value);
-        }
+    set description(value: string) {
+        this.setText(this._description, value);
+    }
+
+    get description(): string {
+        return this._description.textContent || '';
     }
 
     set category(value: string) {
