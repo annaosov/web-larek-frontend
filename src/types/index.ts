@@ -4,7 +4,7 @@ export interface ICard {
     description?: string;
     image: string;
     category: string;
-    price: string | null;
+    price: number | null;
 }
 
 export interface IOrderForm {

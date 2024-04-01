@@ -22,10 +22,6 @@ export class Page extends Component<IPage> {
         this._catalog = ensureElement<HTMLElement>('.gallery');
         this._wrapper = ensureElement<HTMLElement>('.page__wrapper');
         this._basket = ensureElement<HTMLElement>('.header__basket');
-
-        this._basket.addEventListener('click', () => {
-            this.events.emit('bids:open');
-        });
     }
 
     set counter(value: number) {
