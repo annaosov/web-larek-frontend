@@ -20,11 +20,6 @@ export class Basket extends Component<IBasketView> {
         this._total = this.container.querySelector('.basket__price');
         this._button = document.querySelector('.header__basket');
 
-        if (this._button) {
-            this._button.addEventListener('click', () => {
-                events.emit('basket:open');
-            });
-        }
         this.items = [];
     }
 
@@ -37,7 +32,7 @@ export class Basket extends Component<IBasketView> {
             }));
         }
     }
-
+/*
     set selected(items: string[]) {
         if (items.length) {
             this.setDisabled(this._button, false);
@@ -45,7 +40,7 @@ export class Basket extends Component<IBasketView> {
             this.setDisabled(this._button, true);
         }
     }
-
+*/
     set total(total: number) {
         this.setText(this._total, formatNumber(total) + ' синапсов');
     }

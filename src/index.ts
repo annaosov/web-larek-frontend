@@ -59,6 +59,7 @@ events.on('basket:open', () => {
 
 // Изменения в корзине
 events.on('basket:changed', (item: CardItem) => {
+    page.counter = appData.getActiveLots(item).length;
     bids.items = appData.getActiveLots(item).map(item => {
         const card = new BidItem(cloneTemplate(cardBasketTemplate));
         bids.total = appData.getTotal();
