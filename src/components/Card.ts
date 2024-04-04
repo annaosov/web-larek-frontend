@@ -1,6 +1,7 @@
 import {Component} from "./base/Component";
 import {ensureElement, createElement, formatNumber} from "../utils/utils";
 import {EventEmitter} from "./base/events";
+import {IEvents} from "./base/events";
 
 interface ICardActions {
     onClick: (event: MouseEvent) => void;
@@ -19,7 +20,7 @@ export interface ICard {
 export class Card<T> extends Component<ICard> {
     protected _title: HTMLElement;
     protected _price: HTMLElement;
-    protected _button?: HTMLButtonElement;
+    protected _button?: HTMLElement;
     protected _id: HTMLElement;
 
     constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
@@ -40,7 +41,7 @@ export class Card<T> extends Component<ICard> {
     }
 
     set id(value: string) {
-        this._id.setAttribute('id', value);
+        this.container.dataset.id = value;
     }
 
     get id(): string {
@@ -118,13 +119,23 @@ export class CatalogItem extends Card<CatalogItemStatus> {
 
 
 
-export class BidItem extends Card<ICard> {
+export class BasketItem extends Card<ICard> {
     protected _num: HTMLElement;
+    protected _button?: HTMLElement;
 
     constructor(container: HTMLElement, actions?: ICardActions) {
-        super('card', container, actions);
+        super('card', container);
 
         this._num = ensureElement<HTMLElement>(`.basket__item-index`, container);
+        this._button = this.container.querySelector('.basket__item-delete');
+
+        if (actions?.onClick) {
+            if (this._button) {
+                this._button.addEventListener('click', actions.onClick);
+            } else {
+                container.addEventListener('click', actions.onClick);
+            }
+        }
     }
     
     set num(value: string) {

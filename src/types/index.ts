@@ -8,20 +8,38 @@ export interface ICard {
 }
 
 export interface IOrderForm {
+    address: string;
+    payment: string;
+}
+
+export interface IOrder extends IOrderForm {
+    items: string[],
+    total: 0,
+}
+
+export interface IContactsForm {
     email: string;
     phone: string;
 }
 
-export interface IOrder extends IOrderForm {
-    items: string[]
+export interface IOrderFull extends IOrder, IContactsForm {
+    total: 0,
 }
 
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
+export type FormErrors = Partial<Record<keyof IOrderForm, string>>;
+
+export type FormContactsErrors = Partial<Record<keyof IContactsForm, string>>;
 
 export interface IAppState {
     catalog: ICard[];
     basket: string[];
     preview: string | null;
-    order: IOrder | null;
+    order: IOrderForm | null;
+    contacts: IContactsForm | null;
+    orderFull: IOrderFull | null;
     loading: boolean;
+}
+
+export interface IOrderResult {
+    id: string;
 }

@@ -18,8 +18,13 @@ export class Basket extends Component<IBasketView> {
 
         this._list = ensureElement<HTMLElement>('.basket__list', this.container);
         this._total = this.container.querySelector('.basket__price');
-        this._button = document.querySelector('.header__basket');
+        this._button = this.container.querySelector('.basket__button');
 
+        if (this._button) {
+            this._button.addEventListener('click', () => {
+                events.emit('order:open');
+            });
+        }
         this.items = [];
     }
 
