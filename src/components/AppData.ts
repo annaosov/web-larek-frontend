@@ -91,14 +91,12 @@ export class AppState extends Model<IAppState> {
         this.events.emit('FormContactsErrors:change', this.formContactsErrors);
         return Object.keys(errors).length === 0;
     }
-/*
+
     clearBasket() {
-        this.order.items.forEach(id => {
-            //this.toggleOrderedLot(id, false);
-            this.catalog.find(it => it.id === id).clearBid();
-        });
+        this.orderFull.items = [];
+        this.orderFull.total = 0;
     }
-*/
+
     getTotal() {
         return this.basket.reduce((a, c) => a + this.basket.find(it => it.id === c.id).price, 0)
     }
@@ -129,6 +127,8 @@ export class AppState extends Model<IAppState> {
             this.basket.forEach(it => {
                 if (this.basket.find(it => it.id === item.id)) {
                     this.basket.splice(this.basket.indexOf(item), 1);
+                    this.orderFull.items.splice(this.orderFull.items.indexOf(item.id), 1);
+                    this.orderFull.total = this.orderFull.total - item.price;
                 }
             })
         }

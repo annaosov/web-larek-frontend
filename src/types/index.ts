@@ -14,7 +14,7 @@ export interface IOrderForm {
 
 export interface IOrder extends IOrderForm {
     items: string[],
-    total: 0,
+    total: number,
 }
 
 export interface IContactsForm {
@@ -23,7 +23,7 @@ export interface IContactsForm {
 }
 
 export interface IOrderFull extends IOrder, IContactsForm {
-    total: 0,
+    total: number,
 }
 
 export type FormErrors = Partial<Record<keyof IOrderForm, string>>;

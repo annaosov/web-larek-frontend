@@ -112,11 +112,14 @@ events.on('contacts:submit', () => {
             const success = new Success(cloneTemplate(successTemplate), {
                 onClick: () => {
                     modal.close();
-                    //appData.clearBasket();
-                    events.emit('auction:changed');
+                    appData.clearBasket();
+                    basket.items = [];
+                    basket.selected = [];
+                    page.counter = 0;
+                    basket.total = 0;
                 }
             });
-
+            success.total = appData.getTotal();
             modal.render({
                 content: success.render({})
             });
@@ -128,6 +131,7 @@ events.on('contacts:submit', () => {
 
 // Открыть корзину
 events.on('basket:open', () => {
+    basket.selected = appData.orderFull.items;
     modal.render({
         content: basket.render()
     });
@@ -140,8 +144,6 @@ events.on('basket:add', (item: CardItem) => {
         const card = new BasketItem(cloneTemplate(cardBasketTemplate), {
             onClick: () => {
                 events.emit('basket:delete', item);
-                //basket.selected = appData.order.items;
-                basket.total = appData.getTotal();
             }
         });
         return card.render({
@@ -150,7 +152,7 @@ events.on('basket:add', (item: CardItem) => {
             num: item.num,
         });
     });
-    //basket.selected = appData.order.items;
+    
     basket.total = appData.getTotal();
 });
 
@@ -166,6 +168,7 @@ events.on('basket:delete', (item: CardItem) => {
         });
     });
     basket.total = appData.getTotal();
+    basket.selected = appData.orderFull.items;
 });
 
 // Изменена открытая выбранная карточка
