@@ -139,12 +139,9 @@ events.on('basket:open', () => {
 
 // Добавление в корзину
 events.on('basket:add', (item: CardItem) => {
-    page.counter = appData.getAddedToBasket(item).length;
     basket.items = appData.getAddedToBasket(item).map(item => {
         const card = new BasketItem(cloneTemplate(cardBasketTemplate), {
-            onClick: () => {
-                events.emit('basket:delete', item);
-            }
+            onClick: () => events.emit('basket:delete', item)
         });
         return card.render({
             title: item.title,
@@ -152,13 +149,12 @@ events.on('basket:add', (item: CardItem) => {
             num: item.num,
         });
     });
-    
+    page.counter = appData.basket.length;
     basket.total = appData.getTotal();
 });
 
 // Удаление из корзины
 events.on('basket:delete', (item: CardItem) => {
-    page.counter = appData.getDeletedFromBasket(item).length;
     basket.items =  appData.getDeletedFromBasket(item).map(item => {
         const card = new BasketItem(cloneTemplate(cardBasketTemplate));
         return card.render({
@@ -167,6 +163,7 @@ events.on('basket:delete', (item: CardItem) => {
             num: item.num,
         });
     });
+    page.counter = appData.getDeletedFromBasket(item).length;
     basket.total = appData.getTotal();
     basket.selected = appData.orderFull.items;
 });
@@ -175,8 +172,18 @@ events.on('basket:delete', (item: CardItem) => {
 events.on('preview:changed', (item: CardItem) => {
     const showItem = (item: CardItem) => {
         const card = new CatalogItem(cloneTemplate(cardPreviewTemplate), {
-            onClick: () => events.emit('basket:add', item)
+            onClick: () => {
+                    events.emit('basket:add', item);
+                    card.selected = true;
+            }
         });
+        if (appData.basket.length !== 0) {
+            appData.basket.forEach(it => {
+                if (appData.basket.find(it => it.id === item.id)) {
+                    card.selected = true;
+                }
+            });
+        }
         modal.render({
             content: card.render({
                 title: item.title,

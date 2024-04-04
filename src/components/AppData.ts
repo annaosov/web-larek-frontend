@@ -102,15 +102,18 @@ export class AppState extends Model<IAppState> {
     }
 
     getAddedToBasket(item: CardItem): CardItem[] {
+        /*
         if (this.basket.length !== 0) {
             this.basket.forEach(it => {
                 if (this.basket.find(it => it.id === item.id)) {
                     return;
                 } else {
+                    */
                     this.basket.push(item);
                     this.orderFull.items.push(item.id);
                     this.orderFull.total += item.price;
                     item.num = this.basket.indexOf(item) + 1;
+                    /*
                 }
             })
         } else {
@@ -119,6 +122,7 @@ export class AppState extends Model<IAppState> {
             this.orderFull.total += item.price;
             item.num = this.basket.indexOf(item) + 1;
         }
+        */
         return this.basket;
     }
 

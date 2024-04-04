@@ -115,6 +115,14 @@ export class CatalogItem extends Card<CatalogItemStatus> {
     get category(): string {
         return this._category.textContent || '';
     }
+
+    set selected(disabled: boolean) {
+        if (disabled === false) {
+            this.setDisabled(this._button, false);
+        } else {
+            this.setDisabled(this._button, true);
+        }
+    }
 }
 
 
