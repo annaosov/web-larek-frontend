@@ -65,7 +65,7 @@ events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
 });
 
 // Изменилось состояние валидации формы
-events.on('FormContactsErrors:change', (errors: Partial<IContactsForm>) => {
+events.on('formContactsErrors:change', (errors: Partial<IContactsForm>) => {
     const { email, phone } = errors;
     contacts.valid = !email && !phone;
     contacts.errors = Object.values({phone, email}).filter(i => !!i).join('; ');
@@ -131,6 +131,7 @@ events.on('contacts:submit', () => {
 
 // Открыть корзину
 events.on('basket:open', () => {
+    basket.selected = appData.orderFull.items;
     modal.render({
         content: basket.render()
     });
@@ -214,12 +215,10 @@ events.on('preview:changed', (item: CardItem) => {
     }
 });
 
-// Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {
     page.locked = true;
 });
 
-// ... и разблокируем
 events.on('modal:close', () => {
     page.locked = false;
 });

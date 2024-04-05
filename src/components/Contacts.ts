@@ -7,15 +7,6 @@ export class Contacts extends Form<IContactsForm> {
 
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
-/*
-        this._button = this.container.querySelector('.order__button');
-
-        if (this._button) {
-            this._button.addEventListener('click', () => {
-                events.emit('contacts:open');
-            });
-        }
-        */
     }
 
     set phone(value: string) {

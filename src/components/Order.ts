@@ -34,13 +34,4 @@ export class Order extends Form<IOrderForm> {
     set address(value: string) {
         (this.container.elements.namedItem('address') as HTMLInputElement).value = value;
     }
-/*
-    set payment(name: string) {
-        this._buttons.forEach(button => {
-            this.toggleClass(button, 'tabs__item_active', button.name === name);
-            (this.container.elements.namedItem('payment') as HTMLElement).value = online;
-            this.setDisabled(button, button.name === name)
-        });
-    }
-    */
 }

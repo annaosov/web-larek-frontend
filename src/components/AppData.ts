@@ -17,7 +17,6 @@ export class CardItem extends Model<ICard> {
 
 export class AppState extends Model<IAppState> {
     catalog: CardItem[];
-    loading: boolean;
     contacts: IContactsForm = {
         email: '',
         phone: '',
@@ -87,12 +86,11 @@ export class AppState extends Model<IAppState> {
             errors.phone = 'Необходимо указать телефон';
         }
         this.formContactsErrors = errors;
-        this.events.emit('FormContactsErrors:change', this.formContactsErrors);
+        this.events.emit('formContactsErrors:change', this.formContactsErrors);
         return Object.keys(errors).length === 0;
     }
 
     clearBasket() {
-        console.log('очищ корз')
         this.orderFull.items = [];
         this.orderFull.total = 0;
         this.basket = [];
