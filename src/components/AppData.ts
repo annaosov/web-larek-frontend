@@ -12,7 +12,6 @@ export class CardItem extends Model<ICard> {
     title: string;
     price: number;
     category: string;
-    history: number[];
     num: number;
 }
 
@@ -93,8 +92,10 @@ export class AppState extends Model<IAppState> {
     }
 
     clearBasket() {
+        console.log('очищ корз')
         this.orderFull.items = [];
         this.orderFull.total = 0;
+        this.basket = [];
     }
 
     getTotal() {
@@ -102,40 +103,17 @@ export class AppState extends Model<IAppState> {
     }
 
     getAddedToBasket(item: CardItem): CardItem[] {
-        /*
-        if (this.basket.length !== 0) {
-            this.basket.forEach(it => {
-                if (this.basket.find(it => it.id === item.id)) {
-                    return;
-                } else {
-                    */
-                    this.basket.push(item);
-                    this.orderFull.items.push(item.id);
-                    this.orderFull.total += item.price;
-                    item.num = this.basket.indexOf(item) + 1;
-                    /*
-                }
-            })
-        } else {
-            this.basket.push(item);
-            this.orderFull.items.push(item.id);
-            this.orderFull.total += item.price;
-            item.num = this.basket.indexOf(item) + 1;
-        }
-        */
+        this.basket.push(item);
+        this.orderFull.items.push(item.id);
+        this.orderFull.total += item.price;
+        item.num = this.basket.indexOf(item) + 1;
         return this.basket;
     }
 
     getDeletedFromBasket(item: CardItem): CardItem[] {
-        if (this.basket.length !== 0) {
-            this.basket.forEach(it => {
-                if (this.basket.find(it => it.id === item.id)) {
-                    this.basket.splice(this.basket.indexOf(item), 1);
-                    this.orderFull.items.splice(this.orderFull.items.indexOf(item.id), 1);
-                    this.orderFull.total = this.orderFull.total - item.price;
-                }
-            })
-        }
+        this.basket.splice(this.basket.indexOf(item), 1);
+        this.orderFull.items.splice(this.orderFull.items.indexOf(item.id), 1);
+        this.orderFull.total = this.orderFull.total - item.price;
         return this.basket;
     }
 }

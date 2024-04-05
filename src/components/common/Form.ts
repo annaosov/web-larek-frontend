@@ -31,9 +31,9 @@ export class Form<T> extends Component<IFormState> {
                 const field = 'payment';
                 let value = '';
                 if (target.name as keyof T == 'card') {
-                    value = 'online';
+                    value = 'card';
                 } else {
-                    value = 'online';
+                    value = 'cash';
                 }
                 this.onButtonChange(field as keyof T, value);
             });

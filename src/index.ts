@@ -107,16 +107,16 @@ events.on('contacts:open', () => {
 
 // Отправлена форма заказа
 events.on('contacts:submit', () => {
-    api.orderLots(appData.orderFull)
+    api.orderProducts(appData.orderFull)
         .then((result) => {
             const success = new Success(cloneTemplate(successTemplate), {
                 onClick: () => {
                     modal.close();
                     appData.clearBasket();
-                    basket.items = [];
-                    basket.selected = [];
                     page.counter = 0;
                     basket.total = 0;
+                    basket.items = [];
+                    basket.selected = [];
                 }
             });
             success.total = appData.getTotal();
@@ -131,7 +131,6 @@ events.on('contacts:submit', () => {
 
 // Открыть корзину
 events.on('basket:open', () => {
-    basket.selected = appData.orderFull.items;
     modal.render({
         content: basket.render()
     });
@@ -141,7 +140,9 @@ events.on('basket:open', () => {
 events.on('basket:add', (item: CardItem) => {
     basket.items = appData.getAddedToBasket(item).map(item => {
         const card = new BasketItem(cloneTemplate(cardBasketTemplate), {
-            onClick: () => events.emit('basket:delete', item)
+            onClick: () => {
+                events.emit('basket:delete', item);  
+            }
         });
         return card.render({
             title: item.title,
@@ -151,11 +152,12 @@ events.on('basket:add', (item: CardItem) => {
     });
     page.counter = appData.basket.length;
     basket.total = appData.getTotal();
+    basket.selected = appData.orderFull.items;
 });
 
 // Удаление из корзины
 events.on('basket:delete', (item: CardItem) => {
-    basket.items =  appData.getDeletedFromBasket(item).map(item => {
+    basket.items = appData.getDeletedFromBasket(item).map(item => {
         const card = new BasketItem(cloneTemplate(cardBasketTemplate));
         return card.render({
             title: item.title,
@@ -163,7 +165,7 @@ events.on('basket:delete', (item: CardItem) => {
             num: item.num,
         });
     });
-    page.counter = appData.getDeletedFromBasket(item).length;
+    page.counter = appData.basket.length;
     basket.total = appData.getTotal();
     basket.selected = appData.orderFull.items;
 });
@@ -174,15 +176,18 @@ events.on('preview:changed', (item: CardItem) => {
         const card = new CatalogItem(cloneTemplate(cardPreviewTemplate), {
             onClick: () => {
                     events.emit('basket:add', item);
-                    card.selected = true;
+                    modal.close();
             }
         });
-        if (appData.basket.length !== 0) {
+        if (appData.basket && appData.basket.length !== 0) {
             appData.basket.forEach(it => {
                 if (appData.basket.find(it => it.id === item.id)) {
                     card.selected = true;
                 }
             });
+        }
+        if (item.price === null) {
+            card.selected = true;
         }
         modal.render({
             content: card.render({

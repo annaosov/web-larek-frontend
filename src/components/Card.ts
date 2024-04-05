@@ -1,7 +1,5 @@
 import {Component} from "./base/Component";
-import {ensureElement, createElement, formatNumber} from "../utils/utils";
-import {EventEmitter} from "./base/events";
-import {IEvents} from "./base/events";
+import {ensureElement} from "../utils/utils";
 
 interface ICardActions {
     onClick: (event: MouseEvent) => void;
@@ -140,8 +138,6 @@ export class BasketItem extends Card<ICard> {
         if (actions?.onClick) {
             if (this._button) {
                 this._button.addEventListener('click', actions.onClick);
-            } else {
-                container.addEventListener('click', actions.onClick);
             }
         }
     }
