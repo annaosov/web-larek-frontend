@@ -72,6 +72,9 @@ export class AppState extends Model<IAppState> {
         if (!this.order.address) {
             errors.address = 'Необходимо указать адрес';
         }
+        if (!this.order.payment) {
+            errors.payment = 'Необходимо выбрать способ оплаты';
+        }
         this.formErrors = errors;
         this.events.emit('formErrors:change', this.formErrors);
         return Object.keys(errors).length === 0;

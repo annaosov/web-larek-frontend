@@ -52,33 +52,44 @@ events.on<CatalogChangeEvent>('items:changed', () => {
     });
 });
 
-// Открыть карточку
 events.on('card:select', (item: CardItem) => {
     appData.setPreview(item);
 });
 
-// Изменилось состояние валидации формы
-events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
-    const { address } = errors;
-    order.valid = !address;
-    order.errors = Object.values({address}).filter(i => !!i).join('; ');
+// Отправлена форма заказа
+events.on('contacts:submit', () => {
+    api.orderProducts(appData.orderFull)
+        .then((result) => {
+            const success = new Success(cloneTemplate(successTemplate), {
+                onClick: () => {
+                    modal.close();
+                }
+            });
+            success.total = appData.getTotal();
+            appData.clearBasket();
+            basket.items = [];
+            page.counter = 0;
+            basket.total = 0;
+            modal.render({
+                content: success.render({})
+            });
+        })
+        .catch(err => {
+            console.error(err);
+        });
 });
 
 // Изменилось состояние валидации формы
-events.on('formContactsErrors:change', (errors: Partial<IContactsForm>) => {
-    const { email, phone } = errors;
-    contacts.valid = !email && !phone;
-    contacts.errors = Object.values({phone, email}).filter(i => !!i).join('; ');
+events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
+    const { address, payment } = errors;
+    order.valid = !address && !payment;
+    order.errors = Object.values({address, payment}).filter(i => !!i).join('; ');
 });
+
 
 // Изменилось одно из полей
 events.on(/^order\..*:change/, (data: { field: keyof IOrderForm, value: string }) => {
     appData.setOrderField(data.field, data.value);
-});
-
-// Изменилось одно из полей
-events.on(/^contacts\..*:change/, (data: { field: keyof IContactsForm, value: string }) => {
-    appData.setContactsField(data.field, data.value);
 });
 
 // Открыть форму заказа
@@ -91,6 +102,23 @@ events.on('order:open', () => {
             errors: []
         })
     });
+    if (order.address = appData.order.address) {
+        if (order.payment = appData.order.payment) {
+        order.selected = false;
+        }
+    }
+});
+
+// Изменилось состояние валидации формы
+events.on('formContactsErrors:change', (errors: Partial<IContactsForm>) => {
+    const { email, phone } = errors;
+    contacts.valid = !email && !phone;
+    contacts.errors = Object.values({phone, email}).filter(i => !!i).join('; ');
+});
+
+// Изменилось одно из полей
+events.on(/^contacts\..*:change/, (data: { field: keyof IContactsForm, value: string }) => {
+    appData.setContactsField(data.field, data.value);
 });
 
 // Открыть форму контактов
@@ -103,30 +131,11 @@ events.on('contacts:open', () => {
             errors: []
         })
     });
-});
-
-// Отправлена форма заказа
-events.on('contacts:submit', () => {
-    api.orderProducts(appData.orderFull)
-        .then((result) => {
-            const success = new Success(cloneTemplate(successTemplate), {
-                onClick: () => {
-                    modal.close();
-                    appData.clearBasket();
-                    page.counter = 0;
-                    basket.total = 0;
-                    basket.items = [];
-                    basket.selected = [];
-                }
-            });
-            success.total = appData.getTotal();
-            modal.render({
-                content: success.render({})
-            });
-        })
-        .catch(err => {
-            console.error(err);
-        });
+    if (contacts.phone = appData.contacts.phone) {
+        if (contacts.email = appData.contacts.email) {
+            contacts.selected = false;
+        }
+    }
 });
 
 // Открыть корзину

@@ -7,6 +7,8 @@ export class Contacts extends Form<IContactsForm> {
 
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
+
+        this._button = this.container.querySelector('.button');
     }
 
     set phone(value: string) {
@@ -15,5 +17,13 @@ export class Contacts extends Form<IContactsForm> {
 
     set email(value: string) {
         (this.container.elements.namedItem('email') as HTMLInputElement).value = value;
+    }
+
+    set selected(disabled: boolean) {
+        if (disabled === false) {
+            this.setDisabled(this._button, false);
+        } else {
+            this.setDisabled(this._button, true);
+        }
     }
 }
